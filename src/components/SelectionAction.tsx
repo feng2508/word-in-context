@@ -9,11 +9,6 @@ type SelectionData = {
   };
 };
 
-const [panelData, setPanelData] = useState<{
-  text: string;
-  sentence: string | null;
-} | null>(null);
-
 function getSelectedSentence(): string | null {
   const selection = window.getSelection();
 
@@ -54,13 +49,17 @@ function getSelectedSentence(): string | null {
 export default function SelectionAction() {
   const [selection, setSelection] = useState<SelectionData | null>(null);
 
+  const [panelData, setPanelData] = useState<{
+    text: string;
+    sentence: string | null;
+  } | null>(null);
+
   useEffect(() => {
     function handleSelectionChange() {
       const browserSelection = window.getSelection();
       const selectedText = browserSelection?.toString().trim();
 
       if (!browserSelection?.rangeCount || !selectedText) {
-        // No selection or empty selection
         setSelection(null);
         return;
       }
@@ -81,33 +80,62 @@ export default function SelectionAction() {
     document.addEventListener("selectionchange", handleSelectionChange);
 
     return () => {
-      document.removeEventListener("selectionchange", handleSelectionChange); // Clean up the event listener when the component unmounts
+      document.removeEventListener("selectionchange", handleSelectionChange);
     };
   }, []);
 
-  if (!selection) {
-    return null;
-  }
-
   return (
-    <button
-      type="button"
-      onMouseDown={(event) => event.preventDefault()}
-      onClick={() => {
-        setPanelData({
-          text: selection.text,
-          sentence: selection.sentence,
-        });
-        setSelection(null); // Clear the selection after clicking the button
-      }}
-      style={{
-        position: "fixed",
-        top: selection.position.top,
-        left: selection.position.left,
-        zIndex: 2147483647,
-      }}
-    >
-      Explain
-    </button>
+    <>
+      {selection && (
+        <button
+          type="button"
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => {
+            setPanelData({
+              text: selection.text,
+              sentence: selection.sentence,
+            });
+
+            setSelection(null);
+          }}
+          style={{
+            position: "fixed",
+            top: selection.position.top,
+            left: selection.position.left,
+            zIndex: 2147483647,
+          }}
+        >
+          Explain
+        </button>
+      )}
+
+      {panelData && (
+        <aside
+          style={{
+            position: "fixed",
+            top: 0,
+            right: 0,
+            width: 360,
+            height: "100vh",
+            padding: 16,
+            backgroundColor: "white",
+            borderLeft: "1px solid #ddd",
+            boxShadow: "-4px 0 12px rgba(0, 0, 0, 0.15)",
+            zIndex: 2147483647,
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setPanelData(null)}
+            style={{ float: "right" }}
+          >
+            ×
+          </button>
+
+          <p>{panelData.text}</p>
+          <p>{panelData.sentence}</p>
+        </aside>
+      )}
+    </>
   );
 }
