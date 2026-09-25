@@ -90,6 +90,7 @@ export default function SelectionAction() {
       onClick={() => {
         console.log("Selected text:", selection.text);
         console.log("Containing sentence:", selection.sentence);
+        setSelection(null); // Clear the selection after clicking the button
       }}
       style={{
         position: "fixed",
