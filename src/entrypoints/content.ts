@@ -1,6 +1,12 @@
 export default defineContentScript({
-  matches: ['*://*.google.com/*'],
+  matches: ['<all_urls>'],
   main() {
-    console.log('Hello content.');
+    document.addEventListener('selectionchange', () => {
+      const selectedText = window.getSelection()?.toString().trim();
+
+      if (selectedText) {
+        console.log(selectedText);
+      }
+    });
   },
 });
