@@ -9,6 +9,11 @@ type SelectionData = {
   };
 };
 
+const [panelData, setPanelData] = useState<{
+  text: string;
+  sentence: string | null;
+} | null>(null);
+
 function getSelectedSentence(): string | null {
   const selection = window.getSelection();
 
@@ -54,7 +59,8 @@ export default function SelectionAction() {
       const browserSelection = window.getSelection();
       const selectedText = browserSelection?.toString().trim();
 
-      if (!browserSelection?.rangeCount || !selectedText) { // No selection or empty selection
+      if (!browserSelection?.rangeCount || !selectedText) {
+        // No selection or empty selection
         setSelection(null);
         return;
       }
@@ -88,8 +94,10 @@ export default function SelectionAction() {
       type="button"
       onMouseDown={(event) => event.preventDefault()}
       onClick={() => {
-        console.log("Selected text:", selection.text);
-        console.log("Containing sentence:", selection.sentence);
+        setPanelData({
+          text: selection.text,
+          sentence: selection.sentence,
+        });
         setSelection(null); // Clear the selection after clicking the button
       }}
       style={{
