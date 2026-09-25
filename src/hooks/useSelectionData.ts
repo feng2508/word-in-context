@@ -46,7 +46,10 @@ function getSelectedSentence(): string | null {
   return containingSentence?.[0].trim() ?? null;
 }
 
-export function useTextSelection(): SelectionData | null {
+export function useSelectionData(): {
+  selection: SelectionData | null;
+  clearSelection: () => void;
+} {
   const [selection, setSelection] = useState<SelectionData | null>(null);
 
   useEffect(() => {
@@ -62,7 +65,7 @@ export function useTextSelection(): SelectionData | null {
       const range = browserSelection.getRangeAt(0);
       const rect = range.getBoundingClientRect();
 
-      setSelection({
+      setSelection({ // Set the selection data
         text: selectedText,
         sentence: getSelectedSentence(),
         position: {
@@ -79,5 +82,8 @@ export function useTextSelection(): SelectionData | null {
     };
   }, []);
 
-  return selection;
+  return {
+    selection,
+    clearSelection: () => setSelection(null), // Clear the selection data
+  };
 }

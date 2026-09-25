@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom/client';
 import { createShadowRootUi } from 'wxt/utils/content-script-ui/shadow-root';
-import SelectionAction from '../components/SelectionAction';
+import ExplainSelection from '../components/ExplainSelection';
 
 export default defineContentScript({
   matches: ['<all_urls>'],
@@ -15,7 +15,7 @@ export default defineContentScript({
       onMount(container) {
         const root = ReactDOM.createRoot(container);
 
-        root.render(<SelectionAction />);
+        root.render(<ExplainSelection />);
 
         return root;
       },
