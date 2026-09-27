@@ -9,18 +9,20 @@ export default function ExplainSelection() {
       return;
     }
 
-    try {
-      await browser.runtime.sendMessage({
-        type: "open-side-panel",
-      });
+    const response = await browser.runtime.sendMessage({
+      type: "open-side-panel",
+      selection,
+    });
 
-      clearSelection();
-    } catch (error) {
-      console.error("Failed to open side panel:", error);
+    if (!response.ok) {
+      console.error("Failed to open side panel:", response);
+      return;
     }
+
+    clearSelection();
   }
 
-  if (!selection) {
+  if (!selection) { // If there's no selection, don't render anything.
     return null;
   }
 
