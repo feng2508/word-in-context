@@ -2,18 +2,27 @@
 import { useEffect, useState } from "react";
 import type { Browser } from "@wxt-dev/browser";
 import type { SelectionData } from "../../hooks/useSelectionData";
+import type { ExplanationState } from "../../services/deepseek";
 
 export default function App() {
   const [selection, setSelection] = useState<SelectionData | null>(null);
+  const [explanation, setExplanation] = useState<ExplanationState | null>(null);
 
   useEffect(() => {
     function setCurrentSelection(currentSelection: unknown) {
       setSelection((currentSelection as SelectionData | null) ?? null);
     }
 
+    function setCurrentExplanation(currentExplanation: unknown) {
+      setExplanation((currentExplanation as ExplanationState | null) ?? null);
+    }
+
     browser.storage.session
-      .get("currentSelection")
-      .then(({ currentSelection }) => setCurrentSelection(currentSelection));
+      .get(["currentSelection", "currentExplanation"])
+      .then(({ currentSelection, currentExplanation }) => {
+        setCurrentSelection(currentSelection);
+        setCurrentExplanation(currentExplanation);
+      });
 
     function handleStorageChange(
       changes: Record<string, Browser.storage.StorageChange>,
@@ -21,6 +30,10 @@ export default function App() {
     ) {
       if (areaName === "session" && changes.currentSelection) {
         setCurrentSelection(changes.currentSelection.newValue);
+      }
+
+      if (areaName === "session" && changes.currentExplanation) {
+        setCurrentExplanation(changes.currentExplanation.newValue);
       }
     }
 
@@ -37,6 +50,13 @@ export default function App() {
       <p>{selection.text}</p>
       <h2>Sentence</h2>
       <p>{selection.sentence ?? "No sentence found."}</p>
+
+      <h2>Explanation</h2>
+      {explanation?.status === "loading" && <p>Loading explanation…</p>}
+      {explanation?.status === "success" && <p>{explanation.content}</p>}
+      {explanation?.status === "error" && (
+        <p role="alert">Could not get an explanation: {explanation.message}</p>
+      )}
     </main>
   );
 }
