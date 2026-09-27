@@ -3,3 +3,4 @@ model_list:
     litellm_params:
       model: deepseek/deepseek-flash
       api_key: os.environ/DEEPSEEK_API_KEY
+      reasoning_effort: "none"
