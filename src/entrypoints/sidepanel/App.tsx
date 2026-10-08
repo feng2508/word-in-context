@@ -51,11 +51,22 @@ export default function App() {
       <h2>Sentence</h2>
       <p>{selection.sentence ?? "No sentence found."}</p>
 
-      <h2>Explanation</h2>
-      {explanation?.status === "loading" && <p>Loading explanation…</p>}
-      {explanation?.status === "success" && <p>{explanation.content}</p>}
+      <h2>Word card</h2>
+
+      {explanation?.status === "loading" && <p>Creating word card…</p>}
+
+      {explanation?.status === "success" && (
+        <>
+          <h3>Relevant expression</h3>
+          <p>{explanation.card.relevantExpression}</p>
+
+          <h3>Meaning</h3>
+          <p>{explanation.card.meaning}</p>
+        </>
+      )}
+
       {explanation?.status === "error" && (
-        <p role="alert">Could not get an explanation: {explanation.message}</p>
+        <p role="alert">Could not create a word card: {explanation.message}</p>
       )}
     </main>
   );

@@ -1,6 +1,6 @@
 import type { SelectionData } from "../hooks/useSelectionData";
 import {
-  requestExplanation,
+  requestWordCard,
   type ExplanationState,
 } from "../services/deepseek";
 
@@ -8,34 +8,40 @@ function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : "Unable to reach DeepSeek.";
 }
 
-async function requestAndStoreExplanation(selection: SelectionData) {
+async function requestAndStoreWordCard(selection: SelectionData) {
   try {
-    const content = await requestExplanation(selection);
-    const explanation: ExplanationState = { status: "success", content };
+    const card = await requestWordCard(selection);
 
-    await browser.storage.session.set({ currentExplanation: explanation });
+    await browser.storage.session.set({
+      currentExplanation: {
+        status: "success",
+        card,
+      } satisfies ExplanationState,
+    });
   } catch (error) {
     console.error("[word-in-context] DeepSeek error:", error);
 
-    const explanation: ExplanationState = {
-      status: "error",
-      message: getErrorMessage(error),
-    };
-
-    await browser.storage.session.set({ currentExplanation: explanation });
+    await browser.storage.session.set({
+      currentExplanation: {
+        status: "error",
+        message: getErrorMessage(error),
+      } satisfies ExplanationState,
+    });
   }
 }
 
 export default defineBackground(() => {
   browser.runtime.onMessage.addListener(async (message, sender) => {
-    if (message.type !== "open-side-panel" || !sender.tab?.id) {
+    const tabId = sender.tab?.id;
+
+    if (message?.type !== "open-side-panel" || tabId == null) {
       return { ok: false };
     }
 
     try {
       // Start opening immediately from the Explain click.
       await browser.sidePanel.open({
-        tabId: sender.tab.id,
+        tabId,
       });
 
       // Save the selected word and sentence.
@@ -44,7 +50,7 @@ export default defineBackground(() => {
         currentExplanation: { status: "loading" } satisfies ExplanationState,
       });
 
-      void requestAndStoreExplanation(message.selection as SelectionData);
+      void requestAndStoreWordCard(message.selection as SelectionData);
 
       return { ok: true };
     } catch (error) {
