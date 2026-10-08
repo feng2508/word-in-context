@@ -2,11 +2,11 @@
 import { useEffect, useState } from "react";
 import type { Browser } from "@wxt-dev/browser";
 import type { SelectionData } from "../../hooks/useSelectionData";
-import type { ExplanationState } from "../../services/deepseek";
+import type { WordCardState } from "../../types/wordCard";
 
 export default function App() {
   const [selection, setSelection] = useState<SelectionData | null>(null);
-  const [explanation, setExplanation] = useState<ExplanationState | null>(null);
+  const [explanation, setExplanation] = useState<WordCardState | null>(null);
 
   useEffect(() => {
     function setCurrentSelection(currentSelection: unknown) {
@@ -14,7 +14,7 @@ export default function App() {
     }
 
     function setCurrentExplanation(currentExplanation: unknown) {
-      setExplanation((currentExplanation as ExplanationState | null) ?? null);
+      setExplanation((currentExplanation as WordCardState | null) ?? null);
     }
 
     browser.storage.session

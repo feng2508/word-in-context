@@ -1,8 +1,6 @@
 import type { SelectionData } from "../hooks/useSelectionData";
-import {
-  requestWordCard,
-  type ExplanationState,
-} from "../services/deepseek";
+import { requestWordCard } from "../services/wordCard";
+import type { WordCardState } from "../types/wordCard";
 
 function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : "Unable to reach DeepSeek.";
@@ -16,7 +14,7 @@ async function requestAndStoreWordCard(selection: SelectionData) {
       currentExplanation: {
         status: "success",
         card,
-      } satisfies ExplanationState,
+      } satisfies WordCardState,
     });
   } catch (error) {
     console.error("[word-in-context] DeepSeek error:", error);
@@ -25,7 +23,7 @@ async function requestAndStoreWordCard(selection: SelectionData) {
       currentExplanation: {
         status: "error",
         message: getErrorMessage(error),
-      } satisfies ExplanationState,
+      } satisfies WordCardState,
     });
   }
 }
@@ -47,7 +45,7 @@ export default defineBackground(() => {
       // Save the selected word and sentence.
       await browser.storage.session.set({
         currentSelection: message.selection,
-        currentExplanation: { status: "loading" } satisfies ExplanationState,
+        currentExplanation: { status: "loading" } satisfies WordCardState,
       });
 
       void requestAndStoreWordCard(message.selection as SelectionData);
