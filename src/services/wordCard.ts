@@ -21,7 +21,8 @@ Rules:
 3. Give the part of speech.
 4. Give one concise English dictionary definition that best fits this sentence.
 5. Include "relevantExpression" only when it adds useful information beyond the selected word.
-6. Include "note" only when there is one important learning detail, such as:
+6. Include "notes" only when there are important learning details. Return at
+   most two short notes, such as:
    - a separable verb;
    - a compound word breakdown;
    - an adjective declension type;
@@ -35,7 +36,7 @@ Return valid JSON only. Do not use Markdown or add extra fields.
   "partOfSpeech": "noun | verb | adjective | adverb | ...",
   "dictionaryDefinition": "concise English definition",
   "relevantExpression": "optional German expression",
-"note": "optional short learning note, including grammar or sentence role when useful"
+  "notes": ["optional short learning note"]
 }
 
 Selected text: ${JSON.stringify(selection.text)}
@@ -46,6 +47,18 @@ function isOptionalNonEmptyString(value: unknown): boolean {
   return (
     value === undefined ||
     (typeof value === "string" && value.trim().length > 0)
+  );
+}
+
+function isOptionalNotes(value: unknown): value is string[] | undefined {
+  return (
+    value === undefined ||
+    (Array.isArray(value) &&
+      value.length > 0 &&
+      value.length <= 2 &&
+      value.every(
+        (note) => typeof note === "string" && note.trim().length > 0,
+      ))
   );
 }
 
@@ -62,7 +75,7 @@ function isWordCard(value: unknown): value is WordCard {
     typeof card.dictionaryDefinition === "string" &&
     card.dictionaryDefinition.trim().length > 0 &&
     isOptionalNonEmptyString(card.relevantExpression) &&
-    isOptionalNonEmptyString(card.note)
+    isOptionalNotes(card.notes)
   );
 }
 
@@ -91,7 +104,7 @@ function parseWordCard(content: string): WordCard {
     ...(value.relevantExpression
       ? { relevantExpression: value.relevantExpression.trim() }
       : {}),
-    ...(value.note ? { note: value.note.trim() } : {}),
+    ...(value.notes ? { notes: value.notes.map((note) => note.trim()) } : {}),
   };
 }
 

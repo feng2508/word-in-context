@@ -2,7 +2,7 @@ export type WordCard = {
   partOfSpeech: string;
   dictionaryDefinition: string;
   relevantExpression?: string;
-  note?: string;
+  notes?: string[];
 };
 
 export type WordCardState =

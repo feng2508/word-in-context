@@ -140,6 +140,14 @@ body {
   padding-left: 12px;
 }
 
+.word-card__notes {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding-left: 20px;
+  line-height: 1.55;
+}
+
 .word-card__copy-status {
   min-height: 1.25rem;
   margin: 0;

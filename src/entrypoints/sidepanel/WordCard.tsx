@@ -16,7 +16,9 @@ function formatCardForCopy(card: WordCardData, selection: SelectionData): string
     `Part of speech: ${card.partOfSpeech}`,
     `Meaning in context (AI-generated): ${card.dictionaryDefinition}`,
     `Sentence: ${selection.sentence ?? "No sentence found."}`,
-    ...(card.note ? [`Note: ${card.note}`] : []),
+    ...(card.notes?.length
+      ? ["Notes:", ...card.notes.map((note) => `- ${note}`)]
+      : []),
   ];
 
   return lines.join("\n");
@@ -67,10 +69,20 @@ export default function WordCard({ card, selection }: WordCardProps) {
           </p>
         </section>
 
-        {card.note && (
+        {card.notes?.length && (
           <section className="word-card__section word-card__note">
-            <p className="word-card__label">Note</p>
-            <p className="word-card__value">{card.note}</p>
+            <p className="word-card__label">
+              {card.notes.length === 1 ? "Note" : "Notes"}
+            </p>
+            {card.notes.length === 1 ? (
+              <p className="word-card__value">{card.notes[0]}</p>
+            ) : (
+              <ul className="word-card__notes">
+                {card.notes.map((note) => (
+                  <li key={note}>{note}</li>
+                ))}
+              </ul>
+            )}
           </section>
         )}
       </div>
