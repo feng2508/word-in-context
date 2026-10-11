@@ -50,7 +50,12 @@ export default function App() {
   if (!selection) {
     return (
       <main className="sidepanel">
-        <p className="empty-state">Select a word first.</p>
+        <section className="empty-state">
+          <h2 className="empty-state__heading">Select a word to get started</h2>
+          <p className="empty-state__copy">
+            Select a word on the page, then click Explain.
+          </p>
+        </section>
       </main>
     );
   }
