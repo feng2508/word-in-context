@@ -8,4 +8,5 @@ export type WordCard = {
 export type WordCardState =
   | { status: "loading" }
   | { status: "success"; card: WordCard }
-  | { status: "error"; message: string };
+  | { status: "error"; message: string }
+  | { status: "missing-api-key" };

@@ -1,4 +1,5 @@
 import type { SelectionData } from "../hooks/useSelectionData";
+import { getDeepSeekApiKey } from "../services/settings";
 import { requestWordCard } from "../services/wordCard";
 import type { WordCardState } from "../types/wordCard";
 
@@ -29,6 +30,10 @@ async function requestAndStoreWordCard(selection: SelectionData) {
 }
 
 export default defineBackground(() => {
+  void browser.sidePanel.setPanelBehavior({
+    openPanelOnActionClick: true,
+  });
+
   browser.runtime.onMessage.addListener(async (message, sender) => {
     const tabId = sender.tab?.id;
 
@@ -42,13 +47,19 @@ export default defineBackground(() => {
         tabId,
       });
 
+      const apiKey = await getDeepSeekApiKey();
+
       // Save the selected word and sentence.
       await browser.storage.session.set({
         currentSelection: message.selection,
-        currentExplanation: { status: "loading" } satisfies WordCardState,
+        currentExplanation: apiKey
+          ? ({ status: "loading" } satisfies WordCardState)
+          : ({ status: "missing-api-key" } satisfies WordCardState),
       });
 
-      void requestAndStoreWordCard(message.selection as SelectionData);
+      if (apiKey) {
+        void requestAndStoreWordCard(message.selection as SelectionData);
+      }
 
       return { ok: true };
     } catch (error) {

@@ -1,3 +1,5 @@
+import { getDeepSeekApiKey } from "./settings";
+
 type DeepSeekResponse = {
   choices?: Array<{
     message?: {
@@ -9,13 +11,18 @@ type DeepSeekResponse = {
 const DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions";
 const MODEL = "deepseek-flash";
 
+export type DeepSeekConnectionResult =
+  | "connected"
+  | "invalid-key"
+  | "connection-failed";
+
 export async function requestDeepSeekCompletion(
   prompt: string,
 ): Promise<string> {
-  const apiKey = import.meta.env.WXT_DEEPSEEK_API_KEY;
+  const apiKey = await getDeepSeekApiKey();
 
   if (!apiKey) {
-    throw new Error("Missing WXT_DEEPSEEK_API_KEY.");
+    throw new Error("No DeepSeek API key is configured.");
   }
 
   const response = await fetch(DEEPSEEK_API_URL, {
@@ -44,4 +51,19 @@ export async function requestDeepSeekCompletion(
   }
 
   return content;
+}
+
+export async function testDeepSeekConnection(): Promise<DeepSeekConnectionResult> {
+  try {
+    await requestDeepSeekCompletion("Reply with exactly: Connected.");
+    return "connected";
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "";
+
+    if (message.includes("401") || message.includes("403")) {
+      return "invalid-key";
+    }
+
+    return "connection-failed";
+  }
 }
