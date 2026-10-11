@@ -4,11 +4,17 @@ import {
   removeDeepSeekApiKey,
   saveDeepSeekApiKey,
 } from "../../services/settings";
+import {
+  testDeepSeekConnection,
+  type DeepSeekConnectionResult,
+} from "../../services/deepseek";
 
 function App() {
   const [apiKey, setApiKey] = useState("");
   const [isKeyVisible, setIsKeyVisible] = useState(false);
-  const [status, setStatus] = useState("Not connected");
+  const [status, setStatus] = useState<
+    DeepSeekConnectionResult | "not-connected"
+  >("not-connected");
 
   useEffect(() => {
     void getDeepSeekApiKey().then((storedKey) => {
@@ -16,15 +22,22 @@ function App() {
     });
   }, []);
 
-  async function handleSave() {
-    await saveDeepSeekApiKey(apiKey);
-    setStatus("Saved");
+  async function handleSaveAndTest() {
+    const trimmedApiKey = apiKey.trim();
+
+    if (!trimmedApiKey) {
+      setStatus("invalid-key");
+      return;
+    }
+
+    await saveDeepSeekApiKey(trimmedApiKey);
+    setStatus(await testDeepSeekConnection());
   }
 
   async function handleRemove() {
     await removeDeepSeekApiKey();
     setApiKey("");
-    setStatus("Not connected");
+    setStatus("not-connected");
   }
 
   return (
@@ -54,11 +67,22 @@ function App() {
         </a>
       </p>
 
-      <button type="button" onClick={handleSave}>
-        Save
+      <button type="button" onClick={handleSaveAndTest}>
+        Save and test
       </button>
 
-      <p>Status: {status}</p>
+      <p>
+        Status:{" "}
+        {
+          {
+            "not-connected": "Not connected",
+            connected: "Connected",
+            "invalid-key": "This key could not be verified",
+            "connection-failed":
+              "Connection failed—check your network and try again",
+          }[status]
+        }
+      </p>
 
       <p>
         Your key is stored locally in this browser and is sent only to DeepSeek

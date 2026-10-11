@@ -11,6 +11,11 @@ type DeepSeekResponse = {
 const DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions";
 const MODEL = "deepseek-flash";
 
+export type DeepSeekConnectionResult =
+  | "connected"
+  | "invalid-key"
+  | "connection-failed";
+
 export async function requestDeepSeekCompletion(
   prompt: string,
 ): Promise<string> {
@@ -46,4 +51,19 @@ export async function requestDeepSeekCompletion(
   }
 
   return content;
+}
+
+export async function testDeepSeekConnection(): Promise<DeepSeekConnectionResult> {
+  try {
+    await requestDeepSeekCompletion("Reply with exactly: Connected.");
+    return "connected";
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "";
+
+    if (message.includes("401") || message.includes("403")) {
+      return "invalid-key";
+    }
+
+    return "connection-failed";
+  }
 }
