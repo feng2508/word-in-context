@@ -1,0 +1,111 @@
+:root {
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  color: #1d1b20;
+  background: #f8f7fb;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+.sidepanel {
+  padding: 24px 16px;
+}
+
+.empty-state,
+.status-message,
+.error-message {
+  margin: 0;
+  color: #625b71;
+}
+
+.error-message {
+  color: #b3261e;
+}
+
+.word-card {
+  overflow: hidden;
+  border: 1px solid #e5e1e8;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgb(31 26 35 / 8%);
+}
+
+.word-card__header {
+  padding: 20px;
+  border-bottom: 1px solid #e5e1e8;
+  background: #f7f2fa;
+}
+
+.word-card__eyebrow,
+.word-card__label {
+  margin: 0;
+  color: #6750a4;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.word-card__word {
+  margin: 6px 0 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.word-card__part-of-speech {
+  margin: 8px 0 0;
+  color: #625b71;
+}
+
+.word-card__body {
+  display: grid;
+  gap: 20px;
+  padding: 20px;
+}
+
+.word-card__section {
+  margin: 0;
+}
+
+.word-card__value {
+  margin: 6px 0 0;
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.word-card__meaning-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.word-card__badge {
+  display: inline-flex;
+  border-radius: 999px;
+  padding: 3px 8px;
+  color: #6750a4;
+  background: #ede7f6;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.word-card__sentence {
+  padding-top: 16px;
+  border-top: 1px solid #e5e1e8;
+}
+
+.word-card__note {
+  border-left: 3px solid #6750a4;
+  padding-left: 12px;
+}

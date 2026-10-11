@@ -42,45 +42,64 @@ export default function App() {
     return () => browser.storage.onChanged.removeListener(handleStorageChange);
   }, []);
 
-  if (!selection) return <p>Select a word first.</p>;
+  if (!selection) {
+    return (
+      <main className="sidepanel">
+        <p className="empty-state">Select a word first.</p>
+      </main>
+    );
+  }
 
   return (
-    <main>
-      <h2>Selected word</h2>
-      <p>{selection.text}</p>
-      <h2>Sentence</h2>
-      <p>{selection.sentence ?? "No sentence found."}</p>
-
-      <h2>Word card</h2>
-
-      {explanation?.status === "loading" && <p>Creating word card…</p>}
+    <main className="sidepanel">
+      {explanation?.status === "loading" && (
+        <p className="status-message">Creating word card…</p>
+      )}
 
       {explanation?.status === "success" && (
-        <>
-          <h3>Part of speech</h3>
-          <p>{explanation.card.partOfSpeech}</p>
+        <article className="word-card">
+          <header className="word-card__header">
+            <p className="word-card__eyebrow">Word card</p>
+            <h1 className="word-card__word">
+              {explanation.card.relevantExpression ?? selection.text}
+            </h1>
+            <p className="word-card__part-of-speech">
+              {explanation.card.partOfSpeech}
+            </p>
+          </header>
 
-          {explanation.card.relevantExpression && (
-            <>
-              <h3>Relevant expression</h3>
-              <p>{explanation.card.relevantExpression}</p>
-            </>
-          )}
+          <div className="word-card__body">
+            <section className="word-card__section">
+              <div className="word-card__meaning-row">
+                <p className="word-card__label">Meaning in context</p>
+                <span className="word-card__badge">AI-generated</span>
+              </div>
+              <p className="word-card__value">
+                {explanation.card.dictionaryDefinition}
+              </p>
+            </section>
 
-          <h3>Meaning in context</h3>
-          <p>{explanation.card.dictionaryDefinition}</p>
+            <section className="word-card__section word-card__sentence">
+              <p className="word-card__label">Sentence</p>
+              <p className="word-card__value">
+                {selection.sentence ?? "No sentence found."}
+              </p>
+            </section>
 
-          {explanation.card.note && (
-            <>
-              <h3>Note</h3>
-              <p>{explanation.card.note}</p>
-            </>
-          )}
-        </>
+            {explanation.card.note && (
+              <section className="word-card__section word-card__note">
+                <p className="word-card__label">Note</p>
+                <p className="word-card__value">{explanation.card.note}</p>
+              </section>
+            )}
+          </div>
+        </article>
       )}
 
       {explanation?.status === "error" && (
-        <p role="alert">Could not create a word card: {explanation.message}</p>
+        <p className="error-message" role="alert">
+          Could not create a word card: {explanation.message}
+        </p>
       )}
     </main>
   );
