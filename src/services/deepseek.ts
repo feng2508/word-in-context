@@ -1,3 +1,5 @@
+import { getDeepSeekApiKey } from "./settings";
+
 type DeepSeekResponse = {
   choices?: Array<{
     message?: {
@@ -12,10 +14,10 @@ const MODEL = "deepseek-flash";
 export async function requestDeepSeekCompletion(
   prompt: string,
 ): Promise<string> {
-  const apiKey = import.meta.env.WXT_DEEPSEEK_API_KEY;
+  const apiKey = await getDeepSeekApiKey();
 
   if (!apiKey) {
-    throw new Error("Missing WXT_DEEPSEEK_API_KEY.");
+    throw new Error("No DeepSeek API key is configured.");
   }
 
   const response = await fetch(DEEPSEEK_API_URL, {

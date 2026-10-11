@@ -4,24 +4,20 @@ This template should help get you started developing with React in WXT.
 
 ## Test the DeepSeek API
 
-Create a local `.env` file containing your API key. Do not commit this file.
+The extension stores a user-provided API key in `browser.storage.local` rather
+than in a local `.env` file. The upcoming Settings page will provide the UI for
+adding and testing that key.
 
-```env
-WXT_DEEPSEEK_API_KEY=your_deepseek_api_key
-```
-
-Then run this command from the project root to verify that the key, endpoint,
-and model work before starting the extension:
+For a direct endpoint check during development, set a temporary shell variable
+and run this command from the project root:
 
 ```zsh
-set -a
-source .env
-set +a
+export DEEPSEEK_API_KEY="your_deepseek_api_key"
 
 curl --fail-with-body --silent --show-error \
   https://api.deepseek.com/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $WXT_DEEPSEEK_API_KEY" \
+  -H "Authorization: Bearer $DEEPSEEK_API_KEY" \
   -d '{
     "model": "deepseek-flash",
     "stream": false,
