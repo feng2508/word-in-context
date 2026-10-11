@@ -61,7 +61,7 @@ export default function App() {
     <main className="sidepanel">
       {explanation?.status === "missing-api-key" && (
         <section className="missing-key-state">
-          <h2 className="missing-key-state__heading">Set up AI explanations</h2>
+          <h2 className="missing-key-state__heading">Add a DeepSeek API key</h2>
           <p className="missing-key-state__copy">
             Add your own DeepSeek API key to generate word cards.
           </p>
