@@ -3,13 +3,13 @@ import {
   getDeepSeekApiKey,
   removeDeepSeekApiKey,
   saveDeepSeekApiKey,
-} from "../../services/settings";
+} from "../services/settings";
 import {
   testDeepSeekConnection,
   type DeepSeekConnectionResult,
-} from "../../services/deepseek";
+} from "../services/deepseek";
 
-function App() {
+export default function SettingsPage() {
   const [apiKey, setApiKey] = useState("");
   const [isKeyVisible, setIsKeyVisible] = useState(false);
   const [status, setStatus] = useState<
@@ -88,7 +88,7 @@ function App() {
       </button>
 
       <p className={`status status--${status}`}>
-        Status:{" "}
+        Status: {" "}
         {
           {
             "not-connected": "Not connected",
@@ -115,5 +115,3 @@ function App() {
     </main>
   );
 }
-
-export default App;

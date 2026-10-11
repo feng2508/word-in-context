@@ -8,6 +8,9 @@ export default defineConfig({
     startUrls: ['https://www.thegermanproject.com/stories/chicken-little'],
   },
   manifest: {
+    action: {
+      default_title: "Open Word in Context",
+    },
     permissions: ['storage'],
     host_permissions: ['https://api.deepseek.com/*'],
   },

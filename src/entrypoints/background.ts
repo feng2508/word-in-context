@@ -30,6 +30,10 @@ async function requestAndStoreWordCard(selection: SelectionData) {
 }
 
 export default defineBackground(() => {
+  void browser.sidePanel.setPanelBehavior({
+    openPanelOnActionClick: true,
+  });
+
   browser.runtime.onMessage.addListener(async (message, sender) => {
     const tabId = sender.tab?.id;
 

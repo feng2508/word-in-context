@@ -10,9 +10,7 @@ export default function App() {
   const [explanation, setExplanation] = useState<WordCardState | null>(null);
 
   async function openSettings() {
-    await browser.tabs.create({
-      url: browser.runtime.getURL("/popup.html"),
-    });
+    await browser.runtime.openOptionsPage();
   }
 
   useEffect(() => {
