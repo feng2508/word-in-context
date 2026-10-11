@@ -71,7 +71,7 @@ function App() {
         Save and test
       </button>
 
-      <p>
+      <p className={`status status--${status}`}>
         Status:{" "}
         {
           {

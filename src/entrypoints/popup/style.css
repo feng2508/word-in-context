@@ -67,3 +67,19 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.status--not-connected {
+  color: #625b71;
+}
+
+.status--connected {
+  color: #146c2e;
+}
+
+.status--invalid-key {
+  color: #b3261e;
+}
+
+.status--connection-failed {
+  color: #8a4b00;
+}
