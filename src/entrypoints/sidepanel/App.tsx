@@ -9,6 +9,12 @@ export default function App() {
   const [selection, setSelection] = useState<SelectionData | null>(null);
   const [explanation, setExplanation] = useState<WordCardState | null>(null);
 
+  async function openSettings() {
+    await browser.tabs.create({
+      url: browser.runtime.getURL("/popup.html"),
+    });
+  }
+
   useEffect(() => {
     function setCurrentSelection(currentSelection: unknown) {
       setSelection((currentSelection as SelectionData | null) ?? null);
@@ -57,6 +63,9 @@ export default function App() {
         <section>
           <h2>Set up AI explanations</h2>
           <p>Add your own DeepSeek API key to generate word cards.</p>
+          <button type="button" onClick={openSettings}>
+            Open Settings
+          </button>
         </section>
       )}
 
