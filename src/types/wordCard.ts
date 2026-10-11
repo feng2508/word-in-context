@@ -1,6 +1,8 @@
 export type WordCard = {
-  relevantExpression: string;
-  meaning: string;
+  partOfSpeech: string;
+  dictionaryDefinition: string;
+  relevantExpression?: string;
+  note?: string;
 };
 
 export type WordCardState =

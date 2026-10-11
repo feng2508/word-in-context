@@ -57,11 +57,25 @@ export default function App() {
 
       {explanation?.status === "success" && (
         <>
-          <h3>Relevant expression</h3>
-          <p>{explanation.card.relevantExpression}</p>
+          <h3>Part of speech</h3>
+          <p>{explanation.card.partOfSpeech}</p>
 
-          <h3>Meaning</h3>
-          <p>{explanation.card.meaning}</p>
+          {explanation.card.relevantExpression && (
+            <>
+              <h3>Relevant expression</h3>
+              <p>{explanation.card.relevantExpression}</p>
+            </>
+          )}
+
+          <h3>Meaning in context</h3>
+          <p>{explanation.card.dictionaryDefinition}</p>
+
+          {explanation.card.note && (
+            <>
+              <h3>Note</h3>
+              <p>{explanation.card.note}</p>
+            </>
+          )}
         </>
       )}
 
