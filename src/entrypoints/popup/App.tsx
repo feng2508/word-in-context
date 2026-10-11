@@ -1,34 +1,74 @@
-import { useState } from 'react';
-import reactLogo from '@/assets/react.svg';
-import wxtLogo from '/wxt.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import {
+  getDeepSeekApiKey,
+  removeDeepSeekApiKey,
+  saveDeepSeekApiKey,
+} from "../../services/settings";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [apiKey, setApiKey] = useState("");
+  const [isKeyVisible, setIsKeyVisible] = useState(false);
+  const [status, setStatus] = useState("Not connected");
+
+  useEffect(() => {
+    void getDeepSeekApiKey().then((storedKey) => {
+      setApiKey(storedKey ?? "");
+    });
+  }, []);
+
+  async function handleSave() {
+    await saveDeepSeekApiKey(apiKey);
+    setStatus("Saved");
+  }
+
+  async function handleRemove() {
+    await removeDeepSeekApiKey();
+    setApiKey("");
+    setStatus("Not connected");
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://wxt.dev" target="_blank">
-          <img src={wxtLogo} className="logo" alt="WXT logo" />
+    <main>
+      <h1>Settings</h1>
+      <p>AI explanations</p>
+      <p>Use your own DeepSeek API key</p>
+
+      <label htmlFor="api-key">API key</label>
+      <input
+        id="api-key"
+        type={isKeyVisible ? "text" : "password"}
+        value={apiKey}
+        onChange={(event) => setApiKey(event.target.value)}
+      />
+      <button type="button" onClick={() => setIsKeyVisible(!isKeyVisible)}>
+        {isKeyVisible ? "Hide" : "Show"}
+      </button>
+
+      <p>
+        <a
+          href="https://platform.deepseek.com/api_keys"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Get a DeepSeek API key ↗
         </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>WXT + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the WXT and React logos to learn more
       </p>
-    </>
+
+      <button type="button" onClick={handleSave}>
+        Save
+      </button>
+
+      <p>Status: {status}</p>
+
+      <p>
+        Your key is stored locally in this browser and is sent only to DeepSeek
+        when you request an explanation.
+      </p>
+
+      <button type="button" onClick={handleRemove}>
+        Remove API key
+      </button>
+    </main>
   );
 }
 
