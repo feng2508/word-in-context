@@ -41,23 +41,35 @@ function App() {
   }
 
   return (
-    <main>
-      <h1>Settings</h1>
-      <p>AI explanations</p>
-      <p>Use your own DeepSeek API key</p>
+    <main className="settings">
+      <header className="settings__header">
+        <h1 className="settings__title">Settings</h1>
+        <p className="settings__description">Use your own DeepSeek API key</p>
+      </header>
 
-      <label htmlFor="api-key">API key</label>
-      <input
-        id="api-key"
-        type={isKeyVisible ? "text" : "password"}
-        value={apiKey}
-        onChange={(event) => setApiKey(event.target.value)}
-      />
-      <button type="button" onClick={() => setIsKeyVisible(!isKeyVisible)}>
-        {isKeyVisible ? "Hide" : "Show"}
-      </button>
+      <div className="settings__field">
+        <label className="settings__label" htmlFor="api-key">
+          API key
+        </label>
+        <div className="settings__key-control">
+          <input
+            className="settings__key-input"
+            id="api-key"
+            type={isKeyVisible ? "text" : "password"}
+            value={apiKey}
+            onChange={(event) => setApiKey(event.target.value)}
+          />
+          <button
+            className="settings__show-button"
+            type="button"
+            onClick={() => setIsKeyVisible(!isKeyVisible)}
+          >
+            {isKeyVisible ? "Hide" : "Show"}
+          </button>
+        </div>
+      </div>
 
-      <p>
+      <p className="settings__api-link">
         <a
           href="https://platform.deepseek.com/api_keys"
           target="_blank"
@@ -67,7 +79,11 @@ function App() {
         </a>
       </p>
 
-      <button type="button" onClick={handleSaveAndTest}>
+      <button
+        className="settings__primary-button"
+        type="button"
+        onClick={handleSaveAndTest}
+      >
         Save and test
       </button>
 
@@ -84,12 +100,16 @@ function App() {
         }
       </p>
 
-      <p>
+      <p className="settings__privacy">
         Your key is stored locally in this browser and is sent only to DeepSeek
         when you request an explanation.
       </p>
 
-      <button type="button" onClick={handleRemove}>
+      <button
+        className="settings__remove-button"
+        type="button"
+        onClick={handleRemove}
+      >
         Remove API key
       </button>
     </main>
