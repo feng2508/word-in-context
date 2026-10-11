@@ -8,6 +8,8 @@ export default defineConfig({
     startUrls: ['https://www.thegermanproject.com/stories/chicken-little'],
   },
   manifest: {
+    name: "Word in Context",
+    description: "Explain German words in context.",
     action: {
       default_title: "Open Word in Context",
     },
