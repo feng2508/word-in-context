@@ -41,9 +41,17 @@ body {
 }
 
 .word-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
   padding: 20px;
   border-bottom: 1px solid #e5e1e8;
   background: #f7f2fa;
+}
+
+.word-card__heading {
+  min-width: 0;
 }
 
 .word-card__eyebrow,
@@ -66,6 +74,28 @@ body {
 .word-card__part-of-speech {
   margin: 8px 0 0;
   color: #625b71;
+}
+
+.word-card__copy-button {
+  flex: 0 0 auto;
+  border: 1px solid #d8cde9;
+  border-radius: 999px;
+  padding: 7px 10px;
+  color: #6750a4;
+  background: #ffffff;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.word-card__copy-button:hover {
+  background: #f1ebf8;
+}
+
+.word-card__copy-button:focus-visible {
+  outline: 3px solid #6750a4;
+  outline-offset: 2px;
 }
 
 .word-card__body {
@@ -108,4 +138,12 @@ body {
 .word-card__note {
   border-left: 3px solid #6750a4;
   padding-left: 12px;
+}
+
+.word-card__copy-status {
+  min-height: 1.25rem;
+  margin: 0;
+  padding: 0 20px 12px;
+  color: #625b71;
+  font-size: 0.8125rem;
 }
