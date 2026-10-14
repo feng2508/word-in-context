@@ -135,28 +135,6 @@ body {
   color: #625b71;
 }
 
-.word-card__copy-button {
-  flex: 0 0 auto;
-  border: 1px solid #d8cde9;
-  border-radius: 999px;
-  padding: 7px 10px;
-  color: #6750a4;
-  background: #ffffff;
-  font: inherit;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.word-card__copy-button:hover {
-  background: #f1ebf8;
-}
-
-.word-card__copy-button:focus-visible {
-  outline: 3px solid #6750a4;
-  outline-offset: 2px;
-}
-
 .word-card__body {
   display: grid;
   gap: 20px;
@@ -205,12 +183,4 @@ body {
   margin: 8px 0 0;
   padding-left: 20px;
   line-height: 1.55;
-}
-
-.word-card__copy-status {
-  min-height: 1.25rem;
-  margin: 0;
-  padding: 0 20px 12px;
-  color: #625b71;
-  font-size: 0.8125rem;
 }

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import type { SelectionData } from "../../hooks/useSelectionData";
 import type { WordCard as WordCardData } from "../../types/wordCard";
 
@@ -7,37 +6,7 @@ type WordCardProps = {
   selection: SelectionData;
 };
 
-function formatCardForCopy(card: WordCardData, selection: SelectionData): string {
-  const lines = [
-    `Selected word: ${selection.text}`,
-    ...(card.relevantExpression
-      ? [`Relevant expression: ${card.relevantExpression}`]
-      : []),
-    `Part of speech: ${card.partOfSpeech}`,
-    `Meaning in context (AI-generated): ${card.dictionaryDefinition}`,
-    `Sentence: ${selection.sentence ?? "No sentence found."}`,
-    ...(card.notes?.length
-      ? ["Notes:", ...card.notes.map((note) => `- ${note}`)]
-      : []),
-  ];
-
-  return lines.join("\n");
-}
-
 export default function WordCard({ card, selection }: WordCardProps) {
-  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">(
-    "idle",
-  );
-
-  async function handleCopy() {
-    try {
-      await navigator.clipboard.writeText(formatCardForCopy(card, selection));
-      setCopyStatus("copied");
-    } catch {
-      setCopyStatus("error");
-    }
-  }
-
   return (
     <article className="word-card">
       <header className="word-card__header">
@@ -48,9 +17,6 @@ export default function WordCard({ card, selection }: WordCardProps) {
           </h1>
           <p className="word-card__part-of-speech">{card.partOfSpeech}</p>
         </div>
-        <button className="word-card__copy-button" type="button" onClick={handleCopy}>
-          {copyStatus === "copied" ? "Copied" : "Copy card"}
-        </button>
       </header>
 
       <div className="word-card__body">
@@ -86,11 +52,6 @@ export default function WordCard({ card, selection }: WordCardProps) {
           </section>
         )}
       </div>
-
-      <p className="word-card__copy-status" aria-live="polite">
-        {copyStatus === "copied" && "Word card copied to clipboard."}
-        {copyStatus === "error" && "Could not copy the word card."}
-      </p>
     </article>
   );
 }
