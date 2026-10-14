@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { SelectionData } from "../../hooks/useSelectionData";
 import type { WordCard as WordCardData } from "../../types/wordCard";
 
@@ -6,12 +7,60 @@ type WordCardProps = {
   selection: SelectionData;
 };
 
+type CardFieldData = {
+  id: string;
+  label: string;
+  content: ReactNode;
+  tone?: "primary" | "supporting";
+};
+
+function CardField({
+  label,
+  content,
+  tone = "supporting",
+}: Omit<CardFieldData, "id">) {
+  return (
+    <section className={`word-card__field word-card__field--${tone}`}>
+      <h2 className="word-card__field-label">{label}</h2>
+      <div className="word-card__field-content">{content}</div>
+    </section>
+  );
+}
+
 export default function WordCard({ card, selection }: WordCardProps) {
+  const fields: CardFieldData[] = [
+    {
+      id: "meaning",
+      label: "Meaning",
+      content: card.dictionaryDefinition,
+      tone: "primary",
+    },
+    {
+      id: "sentence",
+      label: "In this sentence",
+      content: selection.sentence ?? "No sentence found.",
+    },
+    ...(card.notes?.length
+      ? [
+          {
+            id: "notes",
+            label: "Notes",
+            content: (
+              <ul className="word-card__notes">
+                {card.notes.map((note) => (
+                  <li key={note}>{note}</li>
+                ))}
+              </ul>
+            ),
+          },
+        ]
+      : []),
+  ];
+
   return (
     <article className="word-card">
       <header className="word-card__header">
         <div className="word-card__heading">
-          <p className="word-card__eyebrow">Word card</p>
           <h1 className="word-card__word">
             {card.relevantExpression ?? selection.text}
           </h1>
@@ -20,37 +69,9 @@ export default function WordCard({ card, selection }: WordCardProps) {
       </header>
 
       <div className="word-card__body">
-        <section className="word-card__section">
-          <div className="word-card__meaning-row">
-            <p className="word-card__label">Meaning in context</p>
-            <span className="word-card__badge">AI-generated</span>
-          </div>
-          <p className="word-card__value">{card.dictionaryDefinition}</p>
-        </section>
-
-        <section className="word-card__section word-card__sentence">
-          <p className="word-card__label">Sentence</p>
-          <p className="word-card__value">
-            {selection.sentence ?? "No sentence found."}
-          </p>
-        </section>
-
-        {card.notes?.length && (
-          <section className="word-card__section word-card__note">
-            <p className="word-card__label">
-              {card.notes.length === 1 ? "Note" : "Notes"}
-            </p>
-            {card.notes.length === 1 ? (
-              <p className="word-card__value">{card.notes[0]}</p>
-            ) : (
-              <ul className="word-card__notes">
-                {card.notes.map((note) => (
-                  <li key={note}>{note}</li>
-                ))}
-              </ul>
-            )}
-          </section>
-        )}
+        {fields.map(({ id, ...field }) => (
+          <CardField key={id} {...field} />
+        ))}
       </div>
     </article>
   );
