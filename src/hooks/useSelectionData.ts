@@ -3,13 +3,19 @@ import { useEffect, useState } from "react";
 export type SelectionData = {
   text: string;
   sentence: string | null;
+  markedSentence: string | null;
   position: {
     top: number;
     left: number;
   };
 };
 
-function getSelectedSentence(): string | null {
+type SentenceContext = {
+  sentence: string;
+  markedSentence: string;
+};
+
+function getSelectedSentenceContext(): SentenceContext | null {
   const selection = window.getSelection();
 
   if (!selection?.rangeCount || selection.isCollapsed) {
@@ -33,6 +39,8 @@ function getSelectedSentence(): string | null {
 
   const text = container.textContent ?? "";
   const selectedStart = prefixRange.toString().length;
+  prefixRange.setEnd(selectedRange.endContainer, selectedRange.endOffset);
+  const selectedEnd = prefixRange.toString().length;
 
   const sentences = [...text.matchAll(/[^.!?]+[.!?]+|[^.!?]+$/g)];
 
@@ -40,10 +48,27 @@ function getSelectedSentence(): string | null {
     const start = item.index ?? 0;
     const end = start + item[0].length;
 
-    return selectedStart >= start && selectedStart < end;
+    return selectedStart >= start && selectedEnd <= end;
   });
 
-  return containingSentence?.[0].trim() ?? null;
+  if (!containingSentence) {
+    return null;
+  }
+
+  const rawSentence = containingSentence[0];
+  const sentenceStart = containingSentence.index ?? 0;
+  const leadingWhitespace = rawSentence.length - rawSentence.trimStart().length;
+  const sentence = rawSentence.trim();
+  const selectionStart = selectedStart - sentenceStart - leadingWhitespace;
+  const selectionEnd = selectedEnd - sentenceStart - leadingWhitespace;
+
+  return {
+    sentence,
+    markedSentence: `${sentence.slice(0, selectionStart)}<selected>${sentence.slice(
+      selectionStart,
+      selectionEnd,
+    )}</selected>${sentence.slice(selectionEnd)}`,
+  };
 }
 
 export function useSelectionData(): {
@@ -64,10 +89,12 @@ export function useSelectionData(): {
 
       const range = browserSelection.getRangeAt(0);
       const rect = range.getBoundingClientRect();
+      const sentenceContext = getSelectedSentenceContext();
 
       setSelection({ // Set the selection data
         text: selectedText,
-        sentence: getSelectedSentence(),
+        sentence: sentenceContext?.sentence ?? null,
+        markedSentence: sentenceContext?.markedSentence ?? null,
         position: {
           top: rect.bottom + 8,
           left: rect.left,
