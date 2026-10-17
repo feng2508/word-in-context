@@ -5,7 +5,7 @@ export default defineConfig({
   srcDir: 'src',
   modules: ['@wxt-dev/module-react'],
   webExt: {
-    startUrls: ['https://www.thegermanproject.com/stories/chicken-little'],
+    startUrls: ['manual-tests/tasks.html'],
   },
   manifest: {
     name: "Word in Context",
