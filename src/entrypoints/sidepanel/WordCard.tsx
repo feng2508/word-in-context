@@ -5,7 +5,10 @@ import type { WordCard as WordCardData } from "../../types/wordCard";
 type WordCardProps = {
   card: WordCardData;
   selection: SelectionData;
-  relatedItem: string | null;
+  relatedItem?: string | null;
+  onRelatedItemClick?: (item: string) => void;
+  onBack?: () => void;
+  backLabel?: string;
 };
 
 type CardFieldData = {
@@ -28,7 +31,7 @@ function CardField({
   );
 }
 
-export default function WordCard({ card, selection, relatedItem }: WordCardProps) {
+export default function WordCard({ card, selection, relatedItem, onRelatedItemClick, onBack, backLabel }: WordCardProps) {
   const fields: CardFieldData[] = [
     {
       id: "meaning",
@@ -60,6 +63,7 @@ export default function WordCard({ card, selection, relatedItem }: WordCardProps
   return (
     <article className="word-card">
       <header className="word-card__header">
+        {onBack && <button className="word-card__back-button" type="button" onClick={onBack}>← Back to {backLabel}</button>}
         <div className="word-card__heading">
           <h1 className="word-card__word">
             {selection.text}
@@ -76,7 +80,7 @@ export default function WordCard({ card, selection, relatedItem }: WordCardProps
       {relatedItem && (
         <footer className="word-card__related-item">
           <span>Related item</span>
-          <strong>{relatedItem}</strong>
+          <button type="button" onClick={() => onRelatedItemClick?.(relatedItem)}>{relatedItem} →</button>
         </footer>
       )}
     </article>

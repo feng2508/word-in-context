@@ -164,3 +164,18 @@ body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+
+.word-card__related-item button,
+.word-card__back-button {
+  border: 0;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+  text-decoration: underline;
+}
+
+.word-card__back-button { color: #6750a4; }

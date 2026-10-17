@@ -2,13 +2,14 @@
 import { useEffect, useState } from "react";
 import type { Browser } from "@wxt-dev/browser";
 import type { SelectionData } from "../../hooks/useSelectionData";
-import type { RelatedItemState, WordCardState } from "../../types/wordCard";
+import type { RelatedItemCardState, RelatedItemState, WordCardState } from "../../types/wordCard";
 import WordCard from "./WordCard";
 
 export default function App() {
   const [selection, setSelection] = useState<SelectionData | null>(null);
   const [explanation, setExplanation] = useState<WordCardState | null>(null);
   const [relatedItem, setRelatedItem] = useState<RelatedItemState | null>(null);
+  const [relatedItemCard, setRelatedItemCard] = useState<RelatedItemCardState | null>(null);
 
   async function openSettings() {
     await browser.runtime.openOptionsPage();
@@ -25,13 +26,17 @@ export default function App() {
     function setCurrentRelatedItem(currentRelatedItem: unknown) {
       setRelatedItem((currentRelatedItem as RelatedItemState | null) ?? null);
     }
+    function setCurrentRelatedItemCard(currentRelatedItemCard: unknown) {
+      setRelatedItemCard((currentRelatedItemCard as RelatedItemCardState | null) ?? null);
+    }
 
     browser.storage.session
-      .get(["currentSelection", "currentExplanation", "currentRelatedItem"])
-      .then(({ currentSelection, currentExplanation, currentRelatedItem }) => {
+      .get(["currentSelection", "currentExplanation", "currentRelatedItem", "currentRelatedItemCard"])
+      .then(({ currentSelection, currentExplanation, currentRelatedItem, currentRelatedItemCard }) => {
         setCurrentSelection(currentSelection);
         setCurrentExplanation(currentExplanation);
         setCurrentRelatedItem(currentRelatedItem);
+        setCurrentRelatedItemCard(currentRelatedItemCard);
       });
 
     function handleStorageChange(
@@ -48,12 +53,23 @@ export default function App() {
       if (areaName === "session" && changes.currentRelatedItem) {
         setCurrentRelatedItem(changes.currentRelatedItem.newValue);
       }
+      if (areaName === "session" && changes.currentRelatedItemCard) {
+        setCurrentRelatedItemCard(changes.currentRelatedItemCard.newValue);
+      }
     }
 
     browser.storage.onChanged.addListener(handleStorageChange);
 
     return () => browser.storage.onChanged.removeListener(handleStorageChange);
   }, []);
+
+  async function openRelatedItem(item: string) {
+    await browser.runtime.sendMessage({ type: "open-related-item", item, selection });
+  }
+
+  async function closeRelatedItem() {
+    await browser.runtime.sendMessage({ type: "close-related-item" });
+  }
 
   if (!selection) {
     return (
@@ -90,12 +106,28 @@ export default function App() {
         <p className="status-message">Creating word card…</p>
       )}
 
-      {explanation?.status === "success" && (
+      {!relatedItemCard && explanation?.status === "success" && (
         <WordCard
           card={explanation.card}
           selection={selection}
           relatedItem={relatedItem?.status === "success" ? relatedItem.item : null}
+          onRelatedItemClick={openRelatedItem}
         />
+      )}
+
+      {relatedItemCard?.status === "loading" && <p className="status-message">Creating related item card…</p>}
+
+      {relatedItemCard?.status === "success" && (
+        <WordCard
+          card={relatedItemCard.card}
+          selection={{ ...selection, text: relatedItemCard.item }}
+          onBack={closeRelatedItem}
+          backLabel={selection.text}
+        />
+      )}
+
+      {relatedItemCard?.status === "error" && (
+        <p className="error-message" role="alert">Could not create a related item card: {relatedItemCard.message}</p>
       )}
 
       {explanation?.status === "error" && (

@@ -1,8 +1,9 @@
 import type { SelectionData } from "../hooks/useSelectionData";
 import { requestRelatedItem } from "../services/relatedItem";
+import { requestRelatedItemCard } from "../services/relatedItemCard";
 import { getDeepSeekApiKey } from "../services/settings";
 import { requestWordCard } from "../services/wordCard";
-import type { RelatedItemState, WordCardState } from "../types/wordCard";
+import type { RelatedItemCardState, RelatedItemState, WordCardState } from "../types/wordCard";
 
 function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : "Unable to reach DeepSeek.";
@@ -45,6 +46,15 @@ async function requestAndStoreRelatedItem(selection: SelectionData) {
   }
 }
 
+async function requestAndStoreRelatedItemCard(item: string, selection: SelectionData) {
+  try {
+    const card = await requestRelatedItemCard(item, selection);
+    await browser.storage.session.set({ currentRelatedItemCard: { status: "success", item, card } satisfies RelatedItemCardState });
+  } catch (error) {
+    await browser.storage.session.set({ currentRelatedItemCard: { status: "error", item, message: getErrorMessage(error) } satisfies RelatedItemCardState });
+  }
+}
+
 export default defineBackground(() => {
   void browser.sidePanel.setPanelBehavior({
     openPanelOnActionClick: true,
@@ -52,6 +62,20 @@ export default defineBackground(() => {
 
   browser.runtime.onMessage.addListener(async (message, sender) => {
     const tabId = sender.tab?.id;
+
+    if (message?.type === "open-related-item") {
+      const item = message.item;
+      const selection = message.selection as SelectionData;
+      if (typeof item !== "string" || !item.trim() || !selection) return { ok: false };
+      await browser.storage.session.set({ currentRelatedItemCard: { status: "loading", item } satisfies RelatedItemCardState });
+      void requestAndStoreRelatedItemCard(item, selection);
+      return { ok: true };
+    }
+
+    if (message?.type === "close-related-item") {
+      await browser.storage.session.remove("currentRelatedItemCard");
+      return { ok: true };
+    }
 
     if (message?.type !== "open-side-panel" || tabId == null) {
       return { ok: false };
@@ -75,6 +99,7 @@ export default defineBackground(() => {
           ? ({ status: "loading" } satisfies RelatedItemState)
           : undefined,
       });
+      await browser.storage.session.remove("currentRelatedItemCard");
 
       if (apiKey) {
         void requestAndStoreWordCard(message.selection as SelectionData);
