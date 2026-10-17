@@ -40,29 +40,36 @@ export default function WordCard({ card, selection }: WordCardProps) {
       label: "In this sentence",
       content: selection.sentence ?? "No sentence found.",
     },
-    ...(card.notes?.length
-      ? [
-          {
-            id: "notes",
-            label: "Notes",
-            content: (
-              <ul className="word-card__notes">
-                {card.notes.map((note) => (
-                  <li key={note}>{note}</li>
-                ))}
-              </ul>
-            ),
-          },
-        ]
-      : []),
   ];
+
+  if (card.relevantExpression) {
+    fields.push({
+      id: "related-expression",
+      label: "Part of an expression",
+      content: card.relevantExpression,
+    });
+  }
+
+  if (card.notes?.length) {
+    fields.push({
+      id: "notes",
+      label: "Notes",
+      content: (
+        <ul className="word-card__notes">
+          {card.notes.map((note) => (
+            <li key={note}>{note}</li>
+          ))}
+        </ul>
+      ),
+    });
+  }
 
   return (
     <article className="word-card">
       <header className="word-card__header">
         <div className="word-card__heading">
           <h1 className="word-card__word">
-            {card.relevantExpression ?? selection.text}
+            {selection.text}
           </h1>
           <p className="word-card__part-of-speech">{card.partOfSpeech}</p>
         </div>
