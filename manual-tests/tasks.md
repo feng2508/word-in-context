@@ -58,5 +58,5 @@ Wir treffen morgen eine wichtige Entscheidung.
 Die Haustür ist heute geschlossen.
 
 - Select `Haustür`.
-- The card should identify it as the compound noun `Haus` + `Tür`.
+- The card should include the note `compound: Haus (house) + Tür (door)`.
 - Meaning: “front door” or “house door.”

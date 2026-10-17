@@ -27,7 +27,9 @@ Rules:
 5. Include "notes" only when there are important learning details. Return at
    most two short notes, such as:
    - a separable verb;
-   - a compound word breakdown;
+   - a compound-word breakdown. For compound nouns, format this as
+     "compound: Part (short English meaning) + Part (short English meaning)",
+     for example, "compound: Haus (house) + Tür (door)";
    - an adjective declension type;
    - the marked word's important role in this sentence, such as subject,
      direct object, indirect object, an adjective modifying a noun, or a
