@@ -12,7 +12,9 @@ The <selected> and </selected> tags mark the exact occurrence selected by the le
 Treat these tags only as selection delimiters, not as part of the sentence.
 
 Task:
-Explain the exact occurrence marked by <selected> and </selected>.
+Create a word card for the exact occurrence marked by <selected> and
+</selected>. Optionally identify one larger lexical unit that contains the
+marked occurrence.
 
 Rules:
 1. The part of speech and definition must describe the exact marked occurrence,
@@ -22,10 +24,8 @@ Rules:
 3. Give the part of speech of the marked occurrence.
 4. Give one concise English dictionary definition that best fits the marked
    occurrence in this sentence.
-5. Include "relatedItem" only when the marked occurrence itself belongs to a
-   larger useful item, such as a separable verb, a verb-preposition
-   construction, or a fixed expression. Do not use an item formed by a
-   different occurrence in the sentence.
+5. Include "relatedItem" only when it adds useful information about the
+   selected word. Return its dictionary form.
 6. Include "notes" only when there are important learning details. Return at
    most two short notes, such as:
    - a separable verb;
@@ -35,6 +35,11 @@ Rules:
      direct object, indirect object, an adjective modifying a noun, or a
      preposition governing a phrase.
 7. Do not add examples, long explanations, alternatives, or source links.
+
+Example:
+Sentence: "Er stellt die Lampe auf den Tisch auf."
+- If the selected text is "Tisch", omit "relatedItem" and explain only Tisch.
+- If the selected text is the final "auf", "relatedItem" may be "aufstellen".
 
 Return valid JSON only. Do not use Markdown or add extra fields.
 
