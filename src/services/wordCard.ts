@@ -22,10 +22,10 @@ Rules:
 3. Give the part of speech of the marked occurrence.
 4. Give one concise English dictionary definition that best fits the marked
    occurrence in this sentence.
-5. Include "relevantExpression" only when the marked occurrence itself belongs
-   to that expression and the expression adds useful information beyond the
-   selected word. Do not use an expression formed by a different occurrence in
-   the sentence.
+5. Include "relatedItem" only when the marked occurrence itself belongs to a
+   larger useful item, such as a separable verb, a verb-preposition
+   construction, or a fixed expression. Do not use an item formed by a
+   different occurrence in the sentence.
 6. Include "notes" only when there are important learning details. Return at
    most two short notes, such as:
    - a separable verb;
@@ -41,7 +41,7 @@ Return valid JSON only. Do not use Markdown or add extra fields.
 {
   "partOfSpeech": "noun | verb | adjective | adverb | ...",
   "dictionaryDefinition": "concise English definition",
-  "relevantExpression": "optional German expression",
+  "relatedItem": "optional related German item",
   "notes": ["optional short learning note"]
 }
 
@@ -80,7 +80,7 @@ function isWordCard(value: unknown): value is WordCard {
     card.partOfSpeech.trim().length > 0 &&
     typeof card.dictionaryDefinition === "string" &&
     card.dictionaryDefinition.trim().length > 0 &&
-    isOptionalNonEmptyString(card.relevantExpression) &&
+    isOptionalNonEmptyString(card.relatedItem) &&
     isOptionalNotes(card.notes)
   );
 }
@@ -107,8 +107,8 @@ function parseWordCard(content: string): WordCard {
   return {
     partOfSpeech: value.partOfSpeech.trim(),
     dictionaryDefinition: value.dictionaryDefinition.trim(),
-    ...(value.relevantExpression
-      ? { relevantExpression: value.relevantExpression.trim() }
+    ...(value.relatedItem
+      ? { relatedItem: value.relatedItem.trim() }
       : {}),
     ...(value.notes ? { notes: value.notes.map((note) => note.trim()) } : {}),
   };

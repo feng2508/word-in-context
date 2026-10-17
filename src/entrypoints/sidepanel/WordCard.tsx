@@ -42,11 +42,11 @@ export default function WordCard({ card, selection }: WordCardProps) {
     },
   ];
 
-  if (card.relevantExpression) {
+  if (card.relatedItem) {
     fields.push({
-      id: "related-expression",
-      label: "Part of an expression",
-      content: card.relevantExpression,
+      id: "related-item",
+      label: "Related item",
+      content: card.relatedItem,
     });
   }
 

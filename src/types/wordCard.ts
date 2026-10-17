@@ -1,7 +1,7 @@
 export type WordCard = {
   partOfSpeech: string;
   dictionaryDefinition: string;
-  relevantExpression?: string;
+  relatedItem?: string;
   notes?: string[];
 };
 
