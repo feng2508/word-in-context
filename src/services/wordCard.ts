@@ -13,20 +13,18 @@ Treat these tags only as selection delimiters, not as part of the sentence.
 
 Task:
 Create a word card for the exact occurrence marked by <selected> and
-</selected>. Optionally identify one larger lexical unit that contains the
-marked occurrence.
+</selected>.
 
 Rules:
-1. The part of speech and definition must describe the exact marked occurrence,
+1. The category and definition must describe the exact marked occurrence,
    not another occurrence with the same spelling elsewhere in the sentence.
 2. Do not treat a selected word as a separable-verb prefix unless the marked
    occurrence itself is that prefix.
-3. Give the part of speech of the marked occurrence.
+3. Give the category of the marked occurrence, such as "noun", "preposition",
+   or "verb".
 4. Give one concise English dictionary definition that best fits the marked
    occurrence in this sentence.
-5. Include "relatedItem" only when it adds useful information about the
-   selected word. Return its dictionary form.
-6. Include "notes" only when there are important learning details. Return at
+5. Include "notes" only when there are important learning details. Return at
    most two short notes, such as:
    - a separable verb;
    - a compound word breakdown;
@@ -34,19 +32,13 @@ Rules:
    - the marked word's important role in this sentence, such as subject,
      direct object, indirect object, an adjective modifying a noun, or a
      preposition governing a phrase.
-7. Do not add examples, long explanations, alternatives, or source links.
-
-Example:
-Sentence: "Er stellt die Lampe auf den Tisch auf."
-- If the selected text is "Tisch", omit "relatedItem" and explain only Tisch.
-- If the selected text is the final "auf", "relatedItem" may be "aufstellen".
+6. Do not add examples, long explanations, alternatives, or source links.
 
 Return valid JSON only. Do not use Markdown or add extra fields.
 
 {
-  "partOfSpeech": "noun | verb | adjective | adverb | ...",
+  "category": "noun | verb | adjective | adverb | ...",
   "dictionaryDefinition": "concise English definition",
-  "relatedItem": "optional related German item",
   "notes": ["optional short learning note"]
 }
 
@@ -81,11 +73,10 @@ function isWordCard(value: unknown): value is WordCard {
   const card = value as Record<string, unknown>;
 
   return (
-    typeof card.partOfSpeech === "string" &&
-    card.partOfSpeech.trim().length > 0 &&
+    typeof card.category === "string" &&
+    card.category.trim().length > 0 &&
     typeof card.dictionaryDefinition === "string" &&
     card.dictionaryDefinition.trim().length > 0 &&
-    isOptionalNonEmptyString(card.relatedItem) &&
     isOptionalNotes(card.notes)
   );
 }
@@ -110,11 +101,8 @@ function parseWordCard(content: string): WordCard {
   }
 
   return {
-    partOfSpeech: value.partOfSpeech.trim(),
+    category: value.category.trim(),
     dictionaryDefinition: value.dictionaryDefinition.trim(),
-    ...(value.relatedItem
-      ? { relatedItem: value.relatedItem.trim() }
-      : {}),
     ...(value.notes ? { notes: value.notes.map((note) => note.trim()) } : {}),
   };
 }

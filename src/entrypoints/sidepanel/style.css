@@ -150,3 +150,17 @@ body {
   padding-left: 20px;
   line-height: 1.55;
 }
+
+.word-card__related-item {
+  display: grid;
+  gap: 6px;
+  padding: 0 24px 24px;
+  color: #6750a4;
+}
+
+.word-card__related-item span {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}

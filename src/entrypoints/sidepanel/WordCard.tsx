@@ -5,6 +5,7 @@ import type { WordCard as WordCardData } from "../../types/wordCard";
 type WordCardProps = {
   card: WordCardData;
   selection: SelectionData;
+  relatedItem: string | null;
 };
 
 type CardFieldData = {
@@ -27,7 +28,7 @@ function CardField({
   );
 }
 
-export default function WordCard({ card, selection }: WordCardProps) {
+export default function WordCard({ card, selection, relatedItem }: WordCardProps) {
   const fields: CardFieldData[] = [
     {
       id: "meaning",
@@ -41,14 +42,6 @@ export default function WordCard({ card, selection }: WordCardProps) {
       content: selection.sentence ?? "No sentence found.",
     },
   ];
-
-  if (card.relatedItem) {
-    fields.push({
-      id: "related-item",
-      label: "Related item",
-      content: card.relatedItem,
-    });
-  }
 
   if (card.notes?.length) {
     fields.push({
@@ -71,7 +64,7 @@ export default function WordCard({ card, selection }: WordCardProps) {
           <h1 className="word-card__word">
             {selection.text}
           </h1>
-          <p className="word-card__part-of-speech">{card.partOfSpeech}</p>
+          <p className="word-card__part-of-speech">{card.category}</p>
         </div>
       </header>
 
@@ -80,6 +73,12 @@ export default function WordCard({ card, selection }: WordCardProps) {
           <CardField key={id} {...field} />
         ))}
       </div>
+      {relatedItem && (
+        <footer className="word-card__related-item">
+          <span>Related item</span>
+          <strong>{relatedItem}</strong>
+        </footer>
+      )}
     </article>
   );
 }

@@ -2,12 +2,13 @@
 import { useEffect, useState } from "react";
 import type { Browser } from "@wxt-dev/browser";
 import type { SelectionData } from "../../hooks/useSelectionData";
-import type { WordCardState } from "../../types/wordCard";
+import type { RelatedItemState, WordCardState } from "../../types/wordCard";
 import WordCard from "./WordCard";
 
 export default function App() {
   const [selection, setSelection] = useState<SelectionData | null>(null);
   const [explanation, setExplanation] = useState<WordCardState | null>(null);
+  const [relatedItem, setRelatedItem] = useState<RelatedItemState | null>(null);
 
   async function openSettings() {
     await browser.runtime.openOptionsPage();
@@ -21,12 +22,16 @@ export default function App() {
     function setCurrentExplanation(currentExplanation: unknown) {
       setExplanation((currentExplanation as WordCardState | null) ?? null);
     }
+    function setCurrentRelatedItem(currentRelatedItem: unknown) {
+      setRelatedItem((currentRelatedItem as RelatedItemState | null) ?? null);
+    }
 
     browser.storage.session
-      .get(["currentSelection", "currentExplanation"])
-      .then(({ currentSelection, currentExplanation }) => {
+      .get(["currentSelection", "currentExplanation", "currentRelatedItem"])
+      .then(({ currentSelection, currentExplanation, currentRelatedItem }) => {
         setCurrentSelection(currentSelection);
         setCurrentExplanation(currentExplanation);
+        setCurrentRelatedItem(currentRelatedItem);
       });
 
     function handleStorageChange(
@@ -39,6 +44,9 @@ export default function App() {
 
       if (areaName === "session" && changes.currentExplanation) {
         setCurrentExplanation(changes.currentExplanation.newValue);
+      }
+      if (areaName === "session" && changes.currentRelatedItem) {
+        setCurrentRelatedItem(changes.currentRelatedItem.newValue);
       }
     }
 
@@ -83,7 +91,11 @@ export default function App() {
       )}
 
       {explanation?.status === "success" && (
-        <WordCard card={explanation.card} selection={selection} />
+        <WordCard
+          card={explanation.card}
+          selection={selection}
+          relatedItem={relatedItem?.status === "success" ? relatedItem.item : null}
+        />
       )}
 
       {explanation?.status === "error" && (
