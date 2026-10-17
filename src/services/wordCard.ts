@@ -12,33 +12,35 @@ The <selected> and </selected> tags mark the exact occurrence selected by the le
 Treat these tags only as selection delimiters, not as part of the sentence.
 
 Task:
-Identify the German lexical unit that the learner selected.
+Create a word card for the exact occurrence marked by <selected> and
+</selected>.
 
 Rules:
-1. Return the selected text or its dictionary form.
-2. Expand it only when it belongs to a meaningful lexical unit, such as:
-   - a separable verb;
-   - a reflexive verb;
-   - a verb-preposition construction;
-   - a fixed expression or idiom.
-3. Give the part of speech.
-4. Give one concise English dictionary definition that best fits this sentence.
-5. Include "relevantExpression" only when it adds useful information beyond the selected word.
-6. Include "notes" only when there are important learning details. Return at
+1. The category and definition must describe the exact marked occurrence,
+   not another occurrence with the same spelling elsewhere in the sentence.
+2. Do not treat a selected word as a separable-verb prefix unless the marked
+   occurrence itself is that prefix.
+3. Give the category of the marked occurrence, such as "noun", "preposition",
+   or "verb".
+4. Give one concise English dictionary definition that best fits the marked
+   occurrence in this sentence.
+5. Include "notes" only when there are important learning details. Return at
    most two short notes, such as:
    - a separable verb;
-   - a compound word breakdown;
+   - a compound-word breakdown. For compound nouns, format this as
+     "compound: Part (short English meaning) + Part (short English meaning)",
+     for example, "compound: Haus (house) + Tür (door)";
    - an adjective declension type;
-   - the word's important role in this sentence, such as subject,
-     direct object, indirect object, or an adjective modifying a noun.
-7. Do not add examples, long explanations, alternatives, or source links.
+   - the marked word's important role in this sentence, such as subject,
+     direct object, indirect object, an adjective modifying a noun, or a
+     preposition governing a phrase.
+6. Do not add examples, long explanations, alternatives, or source links.
 
 Return valid JSON only. Do not use Markdown or add extra fields.
 
 {
-  "partOfSpeech": "noun | verb | adjective | adverb | ...",
+  "category": "noun | verb | adjective | adverb | ...",
   "dictionaryDefinition": "concise English definition",
-  "relevantExpression": "optional German expression",
   "notes": ["optional short learning note"]
 }
 
@@ -73,11 +75,10 @@ function isWordCard(value: unknown): value is WordCard {
   const card = value as Record<string, unknown>;
 
   return (
-    typeof card.partOfSpeech === "string" &&
-    card.partOfSpeech.trim().length > 0 &&
+    typeof card.category === "string" &&
+    card.category.trim().length > 0 &&
     typeof card.dictionaryDefinition === "string" &&
     card.dictionaryDefinition.trim().length > 0 &&
-    isOptionalNonEmptyString(card.relevantExpression) &&
     isOptionalNotes(card.notes)
   );
 }
@@ -102,11 +103,8 @@ function parseWordCard(content: string): WordCard {
   }
 
   return {
-    partOfSpeech: value.partOfSpeech.trim(),
+    category: value.category.trim(),
     dictionaryDefinition: value.dictionaryDefinition.trim(),
-    ...(value.relevantExpression
-      ? { relevantExpression: value.relevantExpression.trim() }
-      : {}),
     ...(value.notes ? { notes: value.notes.map((note) => note.trim()) } : {}),
   };
 }

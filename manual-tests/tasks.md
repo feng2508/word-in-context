@@ -52,3 +52,11 @@ Wir treffen morgen eine wichtige Entscheidung.
 - Select `Entscheidung`.
 - Relevant expression: `eine Entscheidung treffen`.
 - Meaning: “to make a decision.”
+
+## Compound noun
+
+Die Haustür ist heute geschlossen.
+
+- Select `Haustür`.
+- The card should include the note `compound: Haus (house) + Tür (door)`.
+- Meaning: “front door” or “house door.”
